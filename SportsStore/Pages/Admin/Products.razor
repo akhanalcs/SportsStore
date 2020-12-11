@@ -1,0 +1,69 @@
+﻿@page "/admin/products"
+@page "/admin"
+
+@* Blazor components are not like other building blocks used for user facing sections of this app.
+    Instead of dealing with individual requests, components can be long lived and deal with multiple user interactions over a longer period.
+    The @inherits used here ensures that this component gets its own repository object, which ensures its operations are separate from those
+    performed by other components displayed to the same user.*@
+@inherits OwningComponentBase<IStoreRepository>
+
+<table class="table table-sm table-striped table-bordered">
+    <thead>
+        <tr>
+            <th>ID</th><th>Name</th>
+            <th>Category</th><th>Price</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if(ProductData?.Count() > 0)
+        {
+            @foreach (var p in ProductData)
+            {
+                <tr>
+                    <td>@p.ProductID</td>
+                    <td>@p.Name</td>
+                    <td>@p.Category</td>
+                    <td>@p.Price.ToString("c")</td>
+                    <td>
+                        <NavLink class="btn btn-sm btn-info" href="@GetDetailsUrl(p.ProductID)">
+                            Details
+                        </NavLink>
+                        <NavLink class="btn btn-sm btn-warning" href="@GetEditUrl(p.ProductID)">
+                            Edit
+                        </NavLink>
+                        <button class="btn btn-danger btn-sm" @onclick="@(e=>DeleteProduct(p))">
+                            Delete
+                        </button>
+                    </td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>
+
+<NavLink class="btn btn-primary" href="/admin/products/create"></NavLink>
+
+@code{
+    public IStoreRepository Repository => Service;
+
+    public IEnumerable<Product> ProductData { get; set; }
+
+    protected async override Task OnInitializedAsync()
+    {
+        await UpdateData();
+    }
+
+    public async Task UpdateData()
+    {
+        ProductData = await Repository.Products.ToListAsync();
+    }
+
+    public async Task DeleteProduct(Product p)
+    {
+        Repository.DeleteProduct(p);
+        await UpdateData();
+    }
+
+    public string GetDetailsUrl(long id) => $"/admin/products/details/{id}";
+    public string GetEditUrl(long id) => $"/admin/products/edit/{id}";
+}

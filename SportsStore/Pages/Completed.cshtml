@@ -1,0 +1,13 @@
+﻿@page
+
+<div class="text-center">
+    <h2>Thanks!</h2>
+    <p>Thank you for placing the order #@OrderId</p>
+    <a class="btn btn-primary" asp-controller="Home">Return to Store</a>
+</div>
+
+@* OrderId comes from the controller: return RedirectToPage("/Completed", new { orderId = order.OrderID }); *@
+@functions{
+    [BindProperty(SupportsGet = true)] @* BindProperty specifies that a value for this should be obtained by the model binding system. *@
+    public string OrderId { get; set; }
+}

@@ -1,0 +1,12 @@
+﻿@model IEnumerable<string>
+
+<a class="btn btn-block btn-outline-secondary" asp-action="Index" asp-controller="Home" asp-route-category="">Home</a>
+
+@foreach (var category in Model)
+{
+    <!--asp-route-category and asp-route-productPage will map to string category, int productPage in  Index of Home Controller-->
+    <a class="btn btn-block @(category == ViewBag.SelectedCategory ? "btn-primary" : "btn-outline-secondary")"
+       asp-action="Index" asp-controller="Home" asp-route-category="@category" asp-route-productPage="1">
+        @category
+    </a>
+}
